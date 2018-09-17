@@ -1,8 +1,8 @@
 {
-  "name": "good",
+  "name": "@elastic/good",
   "description": "Server and process monitoring plugin",
-  "version": "8.1.1",
-  "repository": "git://github.com/hapijs/good",
+  "version": "8.1.1-kibana1",
+  "repository": "git://github.com/elastic/good",
   "main": "lib/index.js",
   "keywords": [
     "process",
