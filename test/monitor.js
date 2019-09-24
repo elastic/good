@@ -11,38 +11,14 @@ const Stringify = require('./fixtures/reporter');
 const Monitor = require('../lib/monitor');
 const Utils = require('../lib/utils');
 
-<<<<<<< HEAD
-// Declare internals
-const internals = {
-    monitorOptions(options) {
-
-        const defaults = {
-            includes: {
-                request: [],
-                response: []
-            },
-            extensions: [],
-            reporters: {},
-            ops: false
-        };
-
-        return Object.assign({}, defaults, options);
-    },
-    monitorFactory(server, options) {
-
-        if (server.events.hasListeners === undefined) {
-            const hasListeners = function (event) {
-=======
 
 const internals = {};
->>>>>>> de106369ca7eda2f6007103a4a6a0dc5420bd866
 
 
 const { describe, it } = exports.lab = Lab.script();
 const { expect } = Code;
 
-
-internals.monitorFactory = function (server, options) {
+internals.monitorOptions = function (options) {
 
     const defaults = {
         includes: {
@@ -54,17 +30,18 @@ internals.monitorFactory = function (server, options) {
         ops: false
     };
 
+    return Object.assign({}, defaults, options);
+};
+
+internals.monitorFactory = function (server, options) {
+
     if (server.events.hasListeners === undefined) {
         const hasListeners = function (event) {
 
             return this.listeners(event).length > 0;
         };
 
-<<<<<<< HEAD
-        return new Monitor(server, internals.monitorOptions(options));
-=======
         server.decorate('server', 'hasListeners', hasListeners);
->>>>>>> de106369ca7eda2f6007103a4a6a0dc5420bd866
     }
 
     if (server.event !== undefined) {
@@ -72,7 +49,7 @@ internals.monitorFactory = function (server, options) {
         server.event('super-secret');
     }
 
-    return new Monitor(server, Object.assign({}, defaults, options));
+    return new Monitor(server, internals.monitorOptions(options));
 };
 
 
@@ -375,8 +352,6 @@ describe('Monitor', () => {
             expect(two._finalized).to.be.true();
             expect(three._finalized).to.be.true();
             expect(monitor._state.report).to.be.false();
-<<<<<<< HEAD
-            expect(monitor._ops._interval._idleTimeout).to.equal(-1);
         });
 
         it('removes extension listeners from server', () => {
@@ -395,8 +370,6 @@ describe('Monitor', () => {
             monitor.stop();
 
             expect(server.events.hasListeners('route')).to.be.false();
-=======
->>>>>>> de106369ca7eda2f6007103a4a6a0dc5420bd866
         });
     });
 
@@ -1087,12 +1060,12 @@ describe('Monitor', () => {
                 }
             });
 
-            let out1 = new GoodReporter.Writer(true);
-            let out2 = new GoodReporter.Writer(true);
+            let out1 = new Reporters.Writer(true);
+            let out2 = new Reporters.Writer(true);
             const monitor = internals.monitorFactory(server, {
                 reporters: {
                     foo: [
-                        new GoodReporter.Namer('foo'),
+                        new Reporters.Namer('foo'),
                         out1
                     ],
                     bar: [
@@ -1107,12 +1080,12 @@ describe('Monitor', () => {
             monitor.stop();
 
             // Reconfigure with new outputs (orignal ones would have been closed).
-            out1 = new GoodReporter.Writer(true);
-            out2 = new GoodReporter.Writer(true);
+            out1 = new Reporters.Writer(true);
+            out2 = new Reporters.Writer(true);
             monitor.configure(internals.monitorOptions({
                 reporters: {
                     foo: [
-                        new GoodReporter.Namer('foo'),
+                        new Reporters.Namer('foo'),
                         out1
                     ],
                     bar: [
@@ -1129,7 +1102,7 @@ describe('Monitor', () => {
                 expect(err).to.exist();
                 expect(err.output.payload.statusCode).to.equal(500);
 
-                await Utils.timeout(50);
+                await new Promise((resolve) => setTimeout(resolve, 50));
 
                 const res1 = out1.data;
                 const res2 = out2.data;

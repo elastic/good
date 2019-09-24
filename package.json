@@ -1,15 +1,8 @@
 {
-<<<<<<< HEAD
   "name": "@elastic/good",
   "description": "Server and process monitoring plugin",
-  "version": "8.1.1-kibana2",
+  "version": "8.2.3-kibana2",
   "repository": "git://github.com/elastic/good",
-=======
-  "name": "@hapi/good",
-  "description": "Server and process monitoring plugin",
-  "version": "8.2.3",
-  "repository": "git://github.com/hapijs/good",
->>>>>>> de106369ca7eda2f6007103a4a6a0dc5420bd866
   "main": "lib/index.js",
   "keywords": [
     "process",

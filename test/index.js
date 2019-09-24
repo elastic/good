@@ -160,8 +160,8 @@ describe('good', () => {
             server.plugins.good.reconfigure({
                 reporters: {
                     foo: [
-                        new GoodReporter.Incrementer(2),
-                        new GoodReporter.Incrementer(4), {
+                        new Reporters.Incrementer(2),
+                        new Reporters.Incrementer(4), {
                             module: '../test/fixtures/reporters',
                             name: 'Writer',
                             args: [{ objectMode: true }]
