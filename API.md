@@ -1,4 +1,6 @@
-# API Reference
+
+
+## good
 
 - [Options](#options)
 - [Reporter Interface](#reporter-interface)
@@ -18,15 +20,15 @@
 Applications with multiple server instances, each with its own monitor should only include one _log_ subscription per destination
 as general events are a process-wide facility and will result in duplicated log events.
 
-## Options
+### Options
 - `[includes]` - optional configuration object
     - `[request]` - array of extra hapi request object fields to supply to reporters on "request", "response", and "error" events. Valid values ['headers', 'payload']. Defaults to `[]`.
     - `[response]` - array of extra hapi response object fields to supply to reporters on "response" events. Valid values ['headers', 'payload']. Defaults to `[]`.
 - `[ops]` - options for controlling the ops reporting from good. Set to `false` to disable ops monitoring completely.
     - `config` - options passed directly into the [`Oppsy`](https://github.com/hapijs/oppsy) constructor as the `config` value. Defaults to `{}`
     - `interval` - interval used when calling `Oppsy.start()`. Defaults to `15000`.
-- `[extensions]` - an array of [hapi event names](https://github.com/hapijs/hapi/blob/master/API.md#server-events) to listen for and report via the good reporting mechanism. Can not be any of ['log', 'ops', 'request', 'response', 'tail']. **Disclaimer** This option should be used with caution. This option will allow users to listen to internal events that are not meant for public consumption. The list of available events can change with any changes to the hapi event system. Also, *none* of the official hapijs reporters have been tested against these custom events. The schema for these events can not be guaranteed because they vary from version to version of hapi.
-- `[reporters]` - Defaults to `{}`. `reporters` is a `key`, `value` pair where the `key` is a reporter name and the `value` is an array of mixed value types. Valid values for the array items are:
+- `[extensions]` - an array of [hapi event names](https://github.com/hapijs/hapi/blob/master/API.md#server.events) to listen for and report via the good reporting mechanism. Can not be any of ['log', 'ops', 'request', 'response', 'tail']. **Disclaimer** This option should be used with caution. This option will allow users to listen to internal events that are not meant for public consumption. The list of available events can change with any changes to the hapi event system. Also, *none* of the official hapijs reporters have been tested against these custom events. The schema for these events can not be guaranteed because they vary from version to version of hapi.
+- `[reporters]` - Defaults to `{}`. `reporters` is an object of `key`, `value` pairs where the `key` is a reporter name and the `value` is an array of mixed value types. Valid values for the array items are:
     - streams specifications object with the following keys
         - `module` - can be :
             - a string that will be used to import a module from node_modules or a local file. Should export a single constructor function that can be invoked with `new`.
@@ -36,6 +38,7 @@ as general events are a process-wide facility and will result in duplicated log 
     - instantiated stream objects
     - string name of a built in `process` stream. Valid values are `'stdout'` and `'stderr'`.
 
+<<<<<<< HEAD
 ## Plugin Interface
 
 After registering the plugin with your server instance, the following methods will be available on `server.plugins.good`.
@@ -43,17 +46,20 @@ After registering the plugin with your server instance, the following methods wi
 - `reconfigure(options)` - reconfigure good on the fly. This will force good to stop monitoring, close all reporter streams (including files and network connections), reload the new configuration, open new streams based on the new configuration, and start monitoring again. The `options` argument schema is identical to the one passed in on plugin registration, documented above. This is a useful way to honor 'SIGHUP' signals for supporting Linux's logrotate program to reopen files or changing logging options without restarting your server.
 
 ## Reporter Interface
+=======
+### Reporter Interface
+>>>>>>> de106369ca7eda2f6007103a4a6a0dc5420bd866
 
 The reporter interface uses the standard stream-and-pipe interface found commonly in the node ecosystem. Each item in the array of streams will be piped together in the array order. Any stream described using a stream specification object will be constructed with `new` to prevent any cross contamination from one reporter to another. For example, when passing the following specification for an "ops-console" reporter:
 
 ```js
 {
     'ops-console': [{
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'Squeeze',
         args: [{ ops: '*' }]
     }, {
-        module: 'good-squeeze',
+        module: '@hapi/good-squeeze',
         name: 'SafeJson'
     }, 'stdout']
 }
@@ -77,7 +83,7 @@ These changes address the two most common requests; "how do I filter on `X`?" an
 
 **This change also allows user to leverage *any* existing transform or write stream in the node ecosystem to be used with good.**
 
-### Stream Transforms Using Plugin Configs
+#### Stream Transforms Using Plugin Configs
 
 To drive route or request level behavior in your stream transform one option is to use the plugin config feature of hapi. Here is an example where a plugin config is used to drive a stream transform that will suppress "response" events when `suppressResponseEvent === true`.
 
@@ -118,7 +124,7 @@ _transform(data, enc, next) {
 }
 ```
 
-### Reporter Lifecycle
+#### Reporter Lifecycle
 
 **Startup**
 
@@ -133,7 +139,7 @@ At this point, data will start flowing to each of the reporters through the pipe
 1. When "onPostStop" is emitted from the hapi server, the shutdown sequence starts.
 2. `null` is pushed through each reporter pipeline. Any synchronous teardown can happen on stream instances in "end" or "finish" events. See [Node stream](https://nodejs.org/api/stream.html) for more information about end-of-stream events. The callback signaling to hapi that our logic is done executing will happen on the next tick.
 
-## Event Types
+### Event Types
 
 - `ops` - System and process performance - CPU, memory, disk, and other metrics.
 - `response` - Information about incoming requests and the response. This maps to either the "response" or "tail" event emitted from hapi servers.
@@ -141,7 +147,7 @@ At this point, data will start flowing to each of the reporters through the pipe
 - `error` - request responses that have a status code of 500. This maps to the "request" hapi event on the "error" channel.
 - `request` - Request logging information. This maps to the hapi 'request' event that is emitted via `request.log()`.
 
-## Event Payloads
+### Event Payloads
 
 Each event emitted from Good has a unique object representing the payload. This is useful for three reasons:
 
@@ -149,7 +155,7 @@ Each event emitted from Good has a unique object representing the payload. This 
 2. It makes tracking down issues with MDB much easier because the payloads aren't just generic objects.
 3. It is more likely to be optimized because the V8 runtime has a better idea of what the structure of each object is going to be much sooner.
 
-### `ServerLog`
+#### `ServerLog`
 
 Event object associated with 'log' events.
 
@@ -160,7 +166,7 @@ Event object associated with 'log' events.
 - `error` - error object, replacing `data` if only an error object is passed to `server.log()`
 - `pid` - the current process id.
 
-### `RequestError`
+#### `RequestError`
 
 Event object associated with 'error' events.
 
@@ -176,7 +182,7 @@ Event object associated with 'error' events.
 
 The `toJSON` method of `GreatError` has been overwritten because `Error` objects can not be stringified directly. A stringified `GreatError` will have `error.message` and `error.stack` in place of the raw `Error` object.
 
-### `RequestSent`
+#### `RequestSent`
 
 Event object associated with the response event option into Good.
 
@@ -204,7 +210,7 @@ Event object associated with the response event option into Good.
 - `requestPayload` - the request payload if `includes.request` includes "payload"
 - `responsePayload` - the response payload if `includes.response` includes "payload"
 
-### `Ops`
+#### `Ops`
 
 Event object associated with the 'ops' event emitted from Oppsy.
 
@@ -233,7 +239,7 @@ Event object associated with the 'ops' event emitted from Oppsy.
         - `http` - socket information http connections. Each value contains the name of the socket used and the number of open connections on the socket. It also includes a `total` for total number of open http sockets.
         - `https` - socket information https connections. Each value contains the name of the socket used and the number of open connections on the socket. It also includes a `total` for total number of open https sockets.
 
-### `RequestLog`
+#### `RequestLog`
 
 Event object associated with the "request" event. This is the hapi event emitter via `request.log()`.
 
@@ -249,7 +255,7 @@ Event object associated with the "request" event. This is the hapi event emitter
 - `config` - plugin-specific config object combining `request.route.settings.plugins.good` and `request.plugins.good`. Request-level overrides route-level. Reporters could use `config` for additional filtering logic.
 - `headers` - the request headers if `includes.request` includes "headers"
 
-### Extension Payloads
+#### Extension Payloads
 
 Because the extension payloads from hapi can vary from one version to another and one event to another, the payload is only loosely defined.
 - `event` - the event name.
