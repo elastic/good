@@ -19,7 +19,7 @@
     "hoek": "5.x.x",
     "joi": "13.x.x",
     "oppsy": "2.x.x",
-    "pumpify": "1.3.x"
+    "pumpify": "^2.0.1"
   },
   "peerDependencies": {
     "hapi": ">=17.x.x"
