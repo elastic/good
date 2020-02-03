@@ -153,18 +153,18 @@ describe('good', () => {
 
     describe('reconfigure()', () => {
 
-        it('exposes reconfigure on server.plugins.good', async () => {
+        it('exposes reconfigure on server.plugins["@elastic/good"]', async () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            expect(server.plugins.good.reconfigure).to.be.a.function();
+            expect(server.plugins['@elastic/good'].reconfigure).to.be.a.function();
         });
 
         it('reconfigures and restarts the monitor', async () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            server.plugins.good.reconfigure({
+            server.plugins['@elastic/good'].reconfigure({
                 reporters: {
                     foo: [
                         new GoodReporter.Incrementer(2),
