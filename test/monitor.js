@@ -91,7 +91,7 @@ describe('Monitor', () => {
         monitor.stop();
     });
 
-    it('logs and destroys a reporter in the event of a stream error', { plan: 3 }, () => {
+    it('logs and destroys a reporter in the event of a stream error', { plan: 3 }, async () => {
 
         const one = new Reporters.Incrementer(1);
         const two = new Reporters.Writer(true);
@@ -114,12 +114,20 @@ describe('Monitor', () => {
         // Verion 8 of node misses this change inside monitor, so force it here
         const foo = monitor._reporters.get('foo');
         foo.destroyed = true;
-        foo.emit('error');
+        foo.emit('error', new Error('bar'));
         monitor.push(() => ({ id: 3, number: 100 }));
 
         expect(two.data).to.have.length(2);
         expect(two.data).to.equal([{ id: 1, number: 3 }, { id: 2, number: 6 }]);
-        console.error = err;
+
+        await new Promise((resolve) => {
+
+            process.nextTick(() => {
+
+                console.error = err;
+                resolve();
+            });
+        });
     });
 
     describe('start()', () => {
