@@ -554,7 +554,7 @@ describe('Monitor', () => {
                     foo: [new Reporters.Namer('ops'), out]
                 },
                 ops: {
-                    interval: 100
+                    interval: 200
                 }
             });
 
@@ -566,7 +566,7 @@ describe('Monitor', () => {
             monitor.startOps();
 
             // Give the reporters time to report
-            await Hoek.wait(150);
+            await Hoek.wait(300);
 
             expect(out.data).to.have.length(1);
 
