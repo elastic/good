@@ -25,7 +25,7 @@
     "@hapi/code": "8.x.x",
     "@hapi/hapi": "18.x.x",
     "@hapi/lab": "24.x.x",
-    "@hapi/wreck": "15.x.x"
+    "@hapi/wreck": "17.x.x"
   },
   "scripts": {
     "test": "lab -m 5000 -t 100 -L -a @hapi/code",
