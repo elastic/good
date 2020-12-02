@@ -944,7 +944,7 @@ describe('Monitor', () => {
 
         it('can communicate with process.stdout and process.stderr', { plan: 6 }, async () => {
 
-            const replace = (orig, dest, prefix) => {
+            const replace = (orig, dest) => {
 
                 return (message, encoding) => {
 
@@ -952,7 +952,6 @@ describe('Monitor', () => {
                         const data = JSON.parse(message);
                         dest.push(data);
                         return true;
-                        // return orig(`\n-- ${prefix}: ${message}`, encoding);
                     }
                     catch (e) {
                         process._rawDebug('-- caught error:', e.stack);
@@ -963,11 +962,11 @@ describe('Monitor', () => {
 
             const write = process.stdout.write;
             const writeData = [];
-            process.stdout.write = replace(write.bind(process.stdout), writeData, 'stdout');
+            process.stdout.write = replace(write.bind(process.stdout), writeData);
 
             const err = process.stderr.write;
             const errData = [];
-            process.stderr.write = replace(err.bind(process.stderr), errData, 'stderr');
+            process.stderr.write = replace(err.bind(process.stderr), errData);
 
             const server = new Hapi.Server();
             const monitor = internals.monitorFactory(server, {
@@ -991,14 +990,9 @@ describe('Monitor', () => {
             process.stdout.write = write;
             process.stderr.write = err;
 
-            // process._rawDebug('\n-- writeData:', writeData);
             expect(writeData.length).to.be.above(1);
             expect(writeData[0]).to.include(['event', 'timestamp', 'host', 'pid', 'os', 'proc', 'load']);
             expect(writeData[0].name).to.equal('foo');
-            // for (let i = 0; i < 2; ++i) {
-            //     expect(writeData[i]).to.include(['event', 'timestamp', 'host', 'pid', 'os', 'proc', 'load']);
-            //     expect(writeData[i].name).to.equal('foo');
-            // }
 
             expect(errData.length).to.be.above(1);
             expect(errData[0]).to.include(['event', 'timestamp', 'host', 'pid', 'os', 'proc', 'load']);
