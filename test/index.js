@@ -150,14 +150,18 @@ describe('good', () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            expect(server.plugins.good.reconfigure).to.be.a.function();
+            const majorVersion = parseInt(server.version.split('.')[0], 10);
+            const pluginPropertyName = majorVersion > 18 ? 'good' : '@elastic/good';
+            expect(server.plugins[pluginPropertyName].reconfigure).to.be.a.function();
         });
 
         it('reconfigures and restarts the monitor', async () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            server.plugins.good.reconfigure({
+            const majorVersion = parseInt(server.version.split('.')[0], 10);
+            const pluginPropertyName = majorVersion > 18 ? 'good' : '@elastic/good';
+            server.plugins[pluginPropertyName].reconfigure({
                 reporters: {
                     foo: [
                         new Reporters.Incrementer(2),
