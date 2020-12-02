@@ -150,14 +150,14 @@ describe('good', () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            expect(server.plugins.good.reconfigure).to.be.a.function();
+            expect(server.plugins['@elastic/good'].reconfigure).to.be.a.function();
         });
 
         it('reconfigures and restarts the monitor', async () => {
 
             const server = new Hapi.Server();
             await server.register(Good);
-            server.plugins.good.reconfigure({
+            server.plugins['@elastic/good'].reconfigure({
                 reporters: {
                     foo: [
                         new Reporters.Incrementer(2),
