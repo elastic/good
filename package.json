@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@hapi/code": "8.x.x",
-    "@hapi/hapi": "18.x.x",
+    "@hapi/hapi": "20.x.x",
     "@hapi/lab": "24.x.x",
     "@hapi/wreck": "17.x.x"
   },
