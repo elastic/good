@@ -954,7 +954,6 @@ describe('Monitor', () => {
                         return true;
                     }
                     catch (e) {
-                        process._rawDebug('-- caught error:', e.stack);
                         return orig(message, encoding);
                     }
                 };
